@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parking Monitor - GitHub Pages</title>
+  <!-- ดึง MQTT.js เพื่อเชื่อมต่อกับ Cloud Broker -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: #1e293b; border-radius: 24px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #334155; }
+    .title { font-size: 1.25rem; font-weight: 600; color: #94a3b8; text-align: center; margin-bottom: 20px; }
+    .badge { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-right: 6px; }
+    .display-box { background: #0f172a; border-radius: 18px; padding: 24px; text-align: center; margin-bottom: 20px; border: 1px solid #334155; }
+    .value { font-size: 3.5rem; font-weight: 800; color: #38bdf8; line-height: 1.1; }
+    .unit { font-size: 1.2rem; color: #64748b; margin-left: 4px; }
+    .secondary-val { font-size: 1.1rem; color: #94a3b8; margin-top: 8px; }
+    .status-badge { display: block; width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 1.2rem; text-align: center; margin-bottom: 20px; }
+    .status-free { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid #22c55e; }
+    .status-occupied { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; }
+    .status-out { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid #eab308; }
+    .meter-container { background: #334155; height: 14px; border-radius: 7px; overflow: hidden; margin-bottom: 12px; }
+    .meter-bar { height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); width: 0%; transition: width 0.2s ease; }
+    .info-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">
+      <span class="badge" id="live-dot"></span>
+      <span id="conn-status">กำลังเชื่อมต่อ Cloud...</span>
+    </div>
+
+    <div class="display-box">
+      <div>
+        <span class="value" id="dist-cm">--</span>
+        <span class="unit">cm</span>
+      </div>
+      <div class="secondary-val">(<span id="dist-mm">--</span> mm)</div>
+    </div>
+
+    <div class="meter-container">
+      <div class="meter-bar" id="meter-bar"></div>
+    </div>
+    <div class="info-row">
+      <span>0 cm</span>
+      <span>ช่วงระยะ (Max ~200 cm)</span>
+      <span>200 cm</span>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <div id="status-card" class="status-badge status-free">รอข้อมูลจาก ESP32...</div>
+    </div>
+  </div>
+
+  <script>
+    // ** กำหนด Topic เดียวกันกับในโค้ด ESP32 **
+    const MQTT_TOPIC = "esp32_parking_project/slot_A1";
+
+    // เชื่อมต่อไปยัง Secure WebSocket ของ HiveMQ Public Broker (พอร์ต 8884 สำหรับ HTTPS)
+    const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
+
+    client.on('connect', () => {
+      document.getElementById('conn-status').innerText = "Online (เชื่อมต่อสำเร็จ)";
+      document.getElementById('live-dot').style.background = "#22c55e";
+      client.subscribe(MQTT_TOPIC);
+    });
+
+    client.on('message', (topic, payload) => {
+      try {
+        const data = JSON.parse(payload.toString());
+
+        if (data.status === 4) {
+          document.getElementById('dist-cm').innerText = '>200';
+          document.getElementById('dist-mm').innerText = 'Out';
+          document.getElementById('meter-bar').style.width = '100%';
+          document.getElementById('status-card').className = 'status-badge status-out';
+          document.getElementById('status-card').innerText = '⚠️ เกินระยะตรวจจับ';
+        } else {
+          document.getElementById('dist-cm').innerText = data.cm.toFixed(1);
+          document.getElementById('dist-mm').innerText = data.mm;
+
+          let pct = Math.min((data.mm / 2000) * 100, 100);
+          document.getElementById('meter-bar').style.width = pct + '%';
+
+          const statusCard = document.getElementById('status-card');
+          if (data.occupied) {
+            statusCard.className = 'status-badge status-occupied';
+            statusCard.innerText = '🔴 มีรถจอด (Occupied)';
+          } else {
+            statusCard.className = 'status-badge status-free';
+            statusCard.innerText = '🟢 ที่ว่าง (Empty)';
+          }
+        }
+      } catch (e) {
+        console.error("Data parse error", e);
+      }
+    });
+
+    client.on('close', () => {
+      document.getElementById('conn-status').innerText = "Offline (ขาดการเชื่อมต่อ)";
+      document.getElementById('live-dot').style.background = "#ef4444";
+    });
+  </script>
+</body>
+</html>
