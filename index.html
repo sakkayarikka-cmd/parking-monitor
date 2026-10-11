@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Smart Parking - GitHub Pages</title>
+  <title>Smart Parking - Multi-Role Dashboard</title>
 
   <!-- MQTT.js -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
@@ -14,26 +13,202 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont,
-                   "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
       background: #0f172a;
       color: #f8fafc;
       min-height: 100vh;
-      padding: 30px 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 950px;
-      margin: auto;
+      display: flex;
+      flex-direction: column;
     }
 
     /* =========================
-       HEADER
+       LOGIN SCREEN
        ========================= */
+    #login-modal {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at top, #1e293b, #0b0f19);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .login-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 35px 30px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    .login-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .login-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .login-desc {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: #38bdf8;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-login:hover {
+      background: #0ea5e9;
+    }
+
+    .login-hint {
+      margin-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid #334155;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    /* =========================
+       MAIN DASHBOARD
+       ========================= */
+    #dashboard-view {
+      display: none;
+      padding: 25px 20px;
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #1e293b;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-role {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    .badge-admin {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
+
+    .badge-user {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid #38bdf8;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-admin-action {
+      background: #0284c7;
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-admin-action:hover {
+      background: #0369a1;
+    }
+
+    .btn-logout {
+      background: #334155;
+      border: none;
+      color: #cbd5e1;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: #fff;
+    }
 
     .header {
       text-align: center;
@@ -43,7 +218,7 @@
     .title {
       font-size: 1.8rem;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .subtitle {
@@ -52,7 +227,7 @@
     }
 
     .connection {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 0.9rem;
       color: #94a3b8;
     }
@@ -67,28 +242,27 @@
     }
 
     /* =========================
-       SUMMARY
+       SUMMARY STATS
        ========================= */
-
     .summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
     }
 
     .summary-box {
       background: #1e293b;
       border: 1px solid #334155;
       border-radius: 18px;
-      padding: 18px;
+      padding: 16px;
       text-align: center;
     }
 
     .summary-title {
       color: #94a3b8;
       font-size: 0.85rem;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .summary-value {
@@ -97,73 +271,147 @@
     }
 
     /* =========================
-       PARKING GRID
+       PARKING MAP (3 LEFT | 2 RIGHT)
        ========================= */
-
-    .parking-grid {
+    .parking-lot-map {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 100px 1fr;
+      gap: 20px;
+      background: #090e17;
+      padding: 24px;
+      border-radius: 24px;
+      border: 2px dashed #334155;
+    }
+
+    .parking-column {
+      display: flex;
+      flex-direction: column;
       gap: 20px;
     }
 
-    .parking-card {
-      background: #1e293b;
-      border-radius: 24px;
-      padding: 25px;
-      border: 1px solid #334155;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    .driving-lane {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      border-left: 2px dashed #64748b;
+      border-right: 2px dashed #64748b;
+      padding: 15px 0;
+      color: #64748b;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      user-select: none;
     }
 
-    .slot-title {
-      text-align: center;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #e2e8f0;
-      margin-bottom: 18px;
+    .lane-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
     }
 
     /* =========================
-       DISTANCE
+       PARKING CARD
        ========================= */
+    .parking-card {
+      background: #1e293b;
+      border-radius: 18px;
+      padding: 18px;
+      border: 2px solid #334155;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .slot-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tags-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sensor-tag {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .tag-live {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+    }
+
+    .tag-demo {
+      background: rgba(234, 179, 8, 0.15);
+      color: #facc15;
+      border: 1px solid #ca8a04;
+    }
+
+    .btn-delete-slot {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      border-radius: 6px;
+      padding: 3px 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .btn-delete-slot:hover {
+      background: #ef4444;
+      color: #fff;
+    }
 
     .display-box {
       background: #0f172a;
-      border-radius: 18px;
-      padding: 22px;
+      border-radius: 14px;
+      padding: 14px;
       text-align: center;
       border: 1px solid #334155;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
 
     .value {
-      font-size: 3.2rem;
+      font-size: 2.2rem;
       font-weight: 800;
       color: #38bdf8;
       line-height: 1.1;
     }
 
     .unit {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       color: #64748b;
       margin-left: 4px;
     }
 
     .secondary-val {
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: #94a3b8;
-      margin-top: 8px;
+      margin-top: 4px;
     }
-
-    /* =========================
-       METER
-       ========================= */
 
     .meter-container {
       background: #334155;
-      height: 12px;
-      border-radius: 7px;
+      height: 8px;
+      border-radius: 5px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .meter-bar {
@@ -176,23 +424,19 @@
     .info-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #64748b;
     }
-
-    /* =========================
-       STATUS
-       ========================= */
 
     .status-badge {
       display: block;
       width: 100%;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 10px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.9rem;
       text-align: center;
-      margin-top: 18px;
+      margin-top: 12px;
     }
 
     .status-free {
@@ -213,666 +457,556 @@
       border: 1px solid #eab308;
     }
 
-    /* =========================
-       RESPONSIVE
-       ========================= */
+    /* Modal Add Slot */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      padding: 15px;
+    }
 
-    @media (max-width: 700px) {
+    .modal-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 25px;
+      width: 100%;
+      max-width: 440px;
+    }
 
-      .parking-grid {
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      background: #334155;
+      border: none;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      flex: 1;
+      background: #38bdf8;
+      border: none;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 820px) {
+      .parking-lot-map {
         grid-template-columns: 1fr;
       }
-
+      .driving-lane {
+        border-left: none;
+        border-right: none;
+        border-top: 2px dashed #64748b;
+        border-bottom: 2px dashed #64748b;
+        padding: 10px 0;
+      }
+      .lane-text {
+        writing-mode: horizontal-tb;
+      }
       .summary {
         grid-template-columns: 1fr;
       }
-
-      .value {
-        font-size: 2.8rem;
-      }
     }
-
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+  <!-- =========================
+       LOGIN SCREEN
+       ========================= -->
+  <div id="login-modal">
+    <div class="login-card">
+      <div class="login-icon">🅿️</div>
+      <div class="login-title">ระบบจัดการลานจอดรถอัจฉริยะ</div>
+      <div class="login-desc">Smart Parking Management System</div>
 
-    <!-- =========================
-         HEADER
-         ========================= -->
+      <form id="login-form">
+        <div class="form-group">
+          <label>ชื่อผู้ใช้งาน (Username)</label>
+          <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน..." required autocomplete="off">
+        </div>
 
+        <div class="form-group">
+          <label>รหัสผ่าน (Password)</label>
+          <input type="password" id="password" placeholder="กรอกรหัสผ่าน..." required>
+        </div>
+
+        <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+      </form>
+
+      <div class="login-hint">
+        <b>💡 บัญชีสำหรับทดสอบ:</b><br>
+        🛡️ <b>Admin:</b> User: <code>admin</code> | Pass: <code>1234</code><br>
+        👤 <b>ผู้ใช้ทั่วไป:</b> User: <code>user</code> | Pass: <code>1234</code>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================
+       MAIN DASHBOARD
+       ========================= -->
+  <div id="dashboard-view">
+
+    <!-- Top User Bar -->
+    <div class="top-bar">
+      <div class="user-profile">
+        <span>เข้าสู่ระบบในชื่อ: <b id="display-user">--</b></span>
+        <span id="role-badge" class="badge-role badge-user">ผู้ใช้ทั่วไป</span>
+      </div>
+
+      <div class="top-actions">
+        <!-- ปุ่มเพิ่มช่องจอด แสดงเฉพาะ Admin -->
+        <button id="btn-add-slot" class="btn-admin-action" onclick="openAddSlotModal()" style="display: none;">
+          ➕ เพิ่มช่องจอดรถ
+        </button>
+        <button class="btn-logout" onclick="logout()">ออกจากระบบ</button>
+      </div>
+    </div>
+
+    <!-- Header -->
     <div class="header">
-
-      <div class="title">
-        🚗 SMART PARKING
-      </div>
-
-      <div class="subtitle">
-        ระบบตรวจสอบสถานะช่องจอดรถอัจฉริยะ
-      </div>
-
+      <div class="title">🚗 SMART PARKING DASHBOARD</div>
+      <div class="subtitle">ระบบตรวจสอบสถานะผังช่องจอดรถอัจฉริยะ (IoT ESP32)</div>
       <div class="connection">
-
         <span class="badge" id="live-dot"></span>
-
-        <span id="conn-status">
-          กำลังเชื่อมต่อ Cloud...
-        </span>
-
+        <span id="conn-status">กำลังเชื่อมต่อ Cloud...</span>
       </div>
-
     </div>
 
-
-    <!-- =========================
-         SUMMARY
-         ========================= -->
-
+    <!-- Summary Stats -->
     <div class="summary">
-
       <div class="summary-box">
-
-        <div class="summary-title">
-          ช่องจอดทั้งหมด
-        </div>
-
-        <div class="summary-value" id="total-slots">
-          2
-        </div>
-
+        <div class="summary-title">ช่องจอดทั้งหมด</div>
+        <div class="summary-value" id="total-slots">0</div>
       </div>
 
-
       <div class="summary-box">
-
-        <div class="summary-title">
-          ช่องว่าง
-        </div>
-
-        <div class="summary-value" id="free-slots">
-          0
-        </div>
-
+        <div class="summary-title">ช่องว่าง (Empty)</div>
+        <div class="summary-value" id="free-slots" style="color: #4ade80;">0</div>
       </div>
 
-
       <div class="summary-box">
-
-        <div class="summary-title">
-          มีรถ
-        </div>
-
-        <div class="summary-value" id="occupied-slots">
-          0
-        </div>
-
+        <div class="summary-title">มีรถจอด (Occupied)</div>
+        <div class="summary-value" id="occupied-slots" style="color: #f87171;">0</div>
       </div>
-
     </div>
 
+    <!-- ==============================================
+         PARKING LOT (Left | Lane | Right)
+         ============================================== -->
+    <div class="parking-lot-map">
+      <!-- ฝั่งซ้าย (เริ่มต้น 3 ช่อง) -->
+      <div class="parking-column" id="left-slots-col"></div>
 
-    <!-- =========================
-         PARKING SLOTS
-         ========================= -->
-
-    <div class="parking-grid">
-
-
-      <!-- =====================
-           SLOT A1
-           ===================== -->
-
-      <div class="parking-card">
-
-        <div class="slot-title">
-          🅰️ ช่อง A1
-        </div>
-
-
-        <div class="display-box">
-
-          <div>
-
-            <span
-              class="value"
-              id="dist-cm-A1">
-              --
-            </span>
-
-            <span class="unit">
-              cm
-            </span>
-
-          </div>
-
-          <div class="secondary-val">
-
-            (
-            <span id="dist-mm-A1">
-              --
-            </span>
-            mm
-            )
-
-          </div>
-
-        </div>
-
-
-        <div class="meter-container">
-
-          <div
-            class="meter-bar"
-            id="meter-bar-A1">
-          </div>
-
-        </div>
-
-
-        <div class="info-row">
-
-          <span>
-            0 cm
-          </span>
-
-          <span>
-            Max ~200 cm
-          </span>
-
-          <span>
-            200 cm
-          </span>
-
-        </div>
-
-
-        <div
-          id="status-card-A1"
-          class="status-badge status-free">
-
-          รอข้อมูลจาก ESP32...
-
-        </div>
-
+      <!-- ถนนส่วนกลาง -->
+      <div class="driving-lane">
+        <div class="lane-text">▲ ทางเดินรถส่วนกลาง (LANE) ▼</div>
       </div>
 
-
-
-      <!-- =====================
-           SLOT A2
-           ===================== -->
-
-      <div class="parking-card">
-
-        <div class="slot-title">
-          🅰️ ช่อง A2
-        </div>
-
-
-        <div class="display-box">
-
-          <div>
-
-            <span
-              class="value"
-              id="dist-cm-A2">
-              --
-            </span>
-
-            <span class="unit">
-              cm
-            </span>
-
-          </div>
-
-          <div class="secondary-val">
-
-            (
-            <span id="dist-mm-A2">
-              --
-            </span>
-            mm
-            )
-
-          </div>
-
-        </div>
-
-
-        <div class="meter-container">
-
-          <div
-            class="meter-bar"
-            id="meter-bar-A2">
-          </div>
-
-        </div>
-
-
-        <div class="info-row">
-
-          <span>
-            0 cm
-          </span>
-
-          <span>
-            Max ~200 cm
-          </span>
-
-          <span>
-            200 cm
-          </span>
-
-        </div>
-
-
-        <div
-          id="status-card-A2"
-          class="status-badge status-free">
-
-          รอข้อมูลจาก ESP32...
-
-        </div>
-
-      </div>
-
+      <!-- ฝั่งขวา (เริ่มต้น 2 ช่อง) -->
+      <div class="parking-column" id="right-slots-col"></div>
     </div>
 
   </div>
 
 
+  <!-- =========================
+       MODAL: เพิ่มช่องจอดรถ (ADMIN ONLY)
+       ========================= -->
+  <div class="modal-overlay" id="add-slot-modal">
+    <div class="modal-box">
+      <div class="modal-title">➕ เพิ่มช่องจอดรถใหม่</div>
+      <form id="add-slot-form">
+        <div class="form-group">
+          <label>รหัส / ชื่อช่องจอด (เช่น A4, B3)</label>
+          <input type="text" id="slot-name-input" placeholder="เช่น B3" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label>ตำแหน่งฝั่งถนน</label>
+          <select id="slot-side-input">
+            <option value="left">ฝั่งซ้าย (Left Side)</option>
+            <option value="right">ฝั่งขวา (Right Side)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>ประเภทช่อง</label>
+          <select id="slot-type-input" onchange="toggleTopicInput()">
+            <option value="demo">ช่องจำลอง (Demo Simulation)</option>
+            <option value="real">เซ็นเซอร์จริง (ESP32 MQTT)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="topic-group" style="display: none;">
+          <label>MQTT Topic</label>
+          <input type="text" id="slot-topic-input" placeholder="esp32_parking_project/slot_name">
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancel" onclick="closeAddSlotModal()">ยกเลิก</button>
+          <button type="submit" class="btn-submit">เพิ่มช่องจอด</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 
   <!-- =========================
        JAVASCRIPT
        ========================= -->
-
   <script>
-
-    /*
-     * MQTT Topics
-     */
-
-    const MQTT_TOPICS = {
-
-      A1: "esp32_parking_project/slot_A1",
-
-      A2: "esp32_parking_project/slot_A2"
-
-    };
-
-
-    /*
-     * เก็บสถานะของแต่ละช่อง
-     */
-
-    const slots = {
-
-      A1: {
-        occupied: false,
-        received: false
-      },
-
-      A2: {
-        occupied: false,
-        received: false
-      }
-
-    };
-
-
-    /*
-     * เชื่อมต่อ HiveMQ
-     */
-
-    const client = mqtt.connect(
-      "wss://broker.hivemq.com:8884/mqtt"
-    );
-
-
-    /*
-     * เมื่อเชื่อมต่อสำเร็จ
-     */
-
-    client.on("connect", () => {
-
-      document.getElementById(
-        "conn-status"
-      ).innerText =
-        "Online (เชื่อมต่อสำเร็จ)";
-
-      document.getElementById(
-        "live-dot"
-      ).style.background =
-        "#22c55e";
-
-
-      /*
-       * Subscribe A1
-       */
-
-      client.subscribe(
-        MQTT_TOPICS.A1,
-        (err) => {
-
-          if (err) {
-
-            console.error(
-              "Subscribe A1 error:",
-              err
-            );
-
-          } else {
-
-            console.log(
-              "Subscribed:",
-              MQTT_TOPICS.A1
-            );
-
-          }
-
-        }
-      );
-
-
-      /*
-       * Subscribe A2
-       */
-
-      client.subscribe(
-        MQTT_TOPICS.A2,
-        (err) => {
-
-          if (err) {
-
-            console.error(
-              "Subscribe A2 error:",
-              err
-            );
-
-          } else {
-
-            console.log(
-              "Subscribed:",
-              MQTT_TOPICS.A2
-            );
-
-          }
-
-        }
-      );
-
-    });
-
-
-
-    /*
-     * เมื่อได้รับข้อมูล MQTT
-     */
-
-    client.on("message", (topic, payload) => {
-
-      try {
-
-        const data =
-          JSON.parse(
-            payload.toString()
-          );
-
-
-        /*
-         * หาว่าข้อมูลมาจากช่องไหน
-         */
-
-        let slot = null;
-
-
-        if (
-          topic === MQTT_TOPICS.A1
-        ) {
-
-          slot = "A1";
-
-        }
-
-        else if (
-          topic === MQTT_TOPICS.A2
-        ) {
-
-          slot = "A2";
-
-        }
-
-
-        /*
-         * ถ้าไม่ใช่ Topic ของเรา
-         */
-
-        if (!slot) {
-          return;
-        }
-
-
-        /*
-         * บันทึกสถานะ
-         */
-
-        slots[slot].received = true;
-
-        slots[slot].occupied =
-          data.occupied;
-
-
-        /*
-         * อ้างอิง Element
-         */
-
-        const cm =
-          document.getElementById(
-            "dist-cm-" + slot
-          );
-
-        const mm =
-          document.getElementById(
-            "dist-mm-" + slot
-          );
-
-        const meter =
-          document.getElementById(
-            "meter-bar-" + slot
-          );
-
-        const status =
-          document.getElementById(
-            "status-card-" + slot
-          );
-
-
-        /*
-         * Sensor Out of Range
-         */
-
-        if (data.status === 4) {
-
-          cm.innerText = ">200";
-
-          mm.innerText = "Out";
-
-          meter.style.width = "100%";
-
-          status.className =
-            "status-badge status-out";
-
-          status.innerText =
-            "⚠️ เกินระยะตรวจจับ";
-
-        }
-
-
-        /*
-         * Sensor ปกติ
-         */
-
-        else {
-
-          cm.innerText =
-            Number(data.cm).toFixed(1);
-
-          mm.innerText =
-            data.mm;
-
-
-          /*
-           * Meter
-           */
-
-          let pct =
-            Math.min(
-              (data.mm / 2000) * 100,
-              100
-            );
-
-          meter.style.width =
-            pct + "%";
-
-
-          /*
-           * สถานะช่อง
-           */
-
-          if (data.occupied) {
-
-            status.className =
-              "status-badge status-occupied";
-
-            status.innerText =
-              "🔴 มีรถจอด (Occupied)";
-
-          }
-
-          else {
-
-            status.className =
-              "status-badge status-free";
-
-            status.innerText =
-              "🟢 ที่ว่าง (Empty)";
-
-          }
-
-        }
-
-
-        /*
-         * อัปเดตจำนวนช่อง
-         */
-
-        updateSummary();
-
-      }
-
-      catch (e) {
-
-        console.error(
-          "Data parse error:",
-          e
-        );
-
-      }
-
-    });
-
-
-
-    /*
-     * อัปเดตสรุปจำนวนช่อง
-     */
-
-    function updateSummary() {
-
-      let free = 0;
-
-      let occupied = 0;
-
-
-      Object.keys(slots).forEach(
-        (slot) => {
-
-          /*
-           * นับเฉพาะช่องที่ได้รับข้อมูลแล้ว
-           */
-
-          if (
-            !slots[slot].received
-          ) {
-            return;
-          }
-
-
-          if (
-            slots[slot].occupied
-          ) {
-
-            occupied++;
-
-          }
-
-          else {
-
-            free++;
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "free-slots"
-      ).innerText = free;
-
-
-      document.getElementById(
-        "occupied-slots"
-      ).innerText = occupied;
-
+    /* ==============================================
+       1. INITIAL DATA & LOCALSTORAGE CONFIG
+       ============================================== */
+    const DEFAULT_SLOTS = [
+      // ฝั่งซ้าย 3 ช่อง (A1, A2 เซ็นเซอร์จริง | A3 ตัวอย่าง)
+      { id: "A1", name: "ช่อง A1", side: "left", isReal: true, topic: "esp32_parking_project/slot_A1", occupied: false, cm: "--", mm: "--", status: "รอข้อมูล..." },
+      { id: "A2", name: "ช่อง A2", side: "left", isReal: true, topic: "esp32_parking_project/slot_A2", occupied: false, cm: "--", mm: "--", status: "รอข้อมูล..." },
+      { id: "A3", name: "ช่อง A3", side: "left", isReal: false, topic: "", occupied: false, cm: 165.0, mm: 1650, status: "🟢 ที่ว่าง (Empty)" },
+
+      // ฝั่งขวา 2 ช่อง (B1, B2 ตัวอย่าง)
+      { id: "B1", name: "ช่อง B1", side: "right", isReal: false, topic: "", occupied: true, cm: 28.4, mm: 284, status: "🔴 มีรถจอด (Occupied)" },
+      { id: "B2", name: "ช่อง B2", side: "right", isReal: false, topic: "", occupied: false, cm: 180.0, mm: 1800, status: "🟢 ที่ว่าง (Empty)" }
+    ];
+
+    let slots = JSON.parse(localStorage.getItem("smart_parking_slots")) || DEFAULT_SLOTS;
+    let currentUser = null; // { user: string, role: 'admin' | 'user' }
+
+    function saveSlots() {
+      localStorage.setItem("smart_parking_slots", JSON.stringify(slots));
     }
 
 
+    /* ==============================================
+       2. LOGIN & AUTHENTICATION
+       ============================================== */
+    const loginForm = document.getElementById("login-form");
+    const loginModal = document.getElementById("login-modal");
+    const dashboardView = document.getElementById("dashboard-view");
+    const displayUser = document.getElementById("display-user");
+    const roleBadge = document.getElementById("role-badge");
+    const btnAddSlot = document.getElementById("btn-add-slot");
 
-    /*
-     * MQTT หลุด
-     */
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedSession = sessionStorage.getItem("parking_session");
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+        renderApp();
+      }
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const u = document.getElementById("username").value.trim().toLowerCase();
+      const p = document.getElementById("password").value.trim();
+
+      if (u === "admin" && p === "1234") {
+        currentUser = { user: "Admin", role: "admin" };
+      } else if (u === "user" && p === "1234") {
+        currentUser = { user: "General User", role: "user" };
+      } else {
+        alert("⚠️ บัญชีหรือรหัสผ่านไม่ถูกต้อง!\n- Admin: admin / 1234\n- ผู้ใช้ทั่วไป: user / 1234");
+        return;
+      }
+
+      sessionStorage.setItem("parking_session", JSON.stringify(currentUser));
+      renderApp();
+    });
+
+    function renderApp() {
+      loginModal.style.display = "none";
+      dashboardView.style.display = "block";
+      displayUser.innerText = currentUser.user;
+
+      if (currentUser.role === "admin") {
+        roleBadge.className = "badge-role badge-admin";
+        roleBadge.innerText = "ผู้ดูแลระบบ (Admin)";
+        btnAddSlot.style.display = "inline-flex";
+      } else {
+        roleBadge.className = "badge-role badge-user";
+        roleBadge.innerText = "ผู้ใช้ทั่วไป (User)";
+        btnAddSlot.style.display = "none";
+      }
+
+      renderParkingSlots();
+      subscribeRealSensors();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("parking_session");
+      window.location.reload();
+    }
+
+
+    /* ==============================================
+       3. RENDER PARKING LOT
+       ============================================== */
+    const leftCol = document.getElementById("left-slots-col");
+    const rightCol = document.getElementById("right-slots-col");
+
+    function renderParkingSlots() {
+      leftCol.innerHTML = "";
+      rightCol.innerHTML = "";
+
+      slots.forEach((s) => {
+        const card = document.createElement("div");
+        card.className = "parking-card";
+        card.id = `card-${s.id}`;
+
+        const isOccupied = s.occupied;
+        const statusClass = isOccupied ? "status-occupied" : "status-free";
+        const statusText = s.status || (isOccupied ? "🔴 มีรถจอด (Occupied)" : "🟢 ที่ว่าง (Empty)");
+        const meterPercent = s.cm !== "--" ? Math.min((parseFloat(s.cm) / 200) * 100, 100) : 0;
+
+        card.innerHTML = `
+          <div class="slot-header">
+            <span class="slot-title">
+              🅿️ ${s.name}
+            </span>
+            <div class="tags-container">
+              ${s.isReal 
+                ? '<span class="sensor-tag tag-live">● เซ็นเซอร์จริง</span>' 
+                : `<span class="sensor-tag tag-demo" ${currentUser && currentUser.role === 'admin' ? `onclick="toggleSlot('${s.id}')" style="cursor:pointer;" title="คลิกสลับสถานะ"` : ''}>${currentUser && currentUser.role === 'admin' ? 'จำลอง (คลิกสลับ)' : 'จำลอง'}</span>`}
+              ${currentUser && currentUser.role === 'admin' ? `<button class="btn-delete-slot" onclick="deleteSlot('${s.id}')" title="ลบช่องนี้">ลบ</button>` : ''}
+            </div>
+          </div>
+
+          <div class="display-box">
+            <div>
+              <span class="value" id="dist-cm-${s.id}">${s.cm}</span>
+              <span class="unit">cm</span>
+            </div>
+            <div class="secondary-val">
+              (<span id="dist-mm-${s.id}">${s.mm}</span> ${s.isReal ? 'mm' : ''})
+            </div>
+          </div>
+
+          <div class="meter-container">
+            <div class="meter-bar" id="meter-bar-${s.id}" style="width: ${meterPercent}%;"></div>
+          </div>
+          <div class="info-row">
+            <span>0 cm</span>
+            <span>${s.isReal ? 'Max ~200 cm' : 'โหมดตัวอย่าง'}</span>
+            <span>200 cm</span>
+          </div>
+
+          <div id="status-card-${s.id}" class="status-badge ${statusClass}">
+            ${statusText}
+          </div>
+        `;
+
+        if (s.side === "left") {
+          leftCol.appendChild(card);
+        } else {
+          rightCol.appendChild(card);
+        }
+      });
+
+      updateSummary();
+    }
+
+    // ฟังก์ชันให้ Admin สลับสถานะของช่องจำลอง
+    function toggleSlot(id) {
+      if (!currentUser || currentUser.role !== "admin") return;
+      const s = slots.find(x => x.id === id);
+      if (!s || s.isReal) return;
+
+      s.occupied = !s.occupied;
+      if (s.occupied) {
+        s.cm = 25.0;
+        s.mm = 250;
+        s.status = "🔴 มีรถจอด (Occupied)";
+      } else {
+        s.cm = 175.0;
+        s.mm = 1750;
+        s.status = "🟢 ที่ว่าง (Empty)";
+      }
+      saveSlots();
+      renderParkingSlots();
+    }
+
+    // ฟังก์ชันให้ Admin ลบช่องจอด
+    function deleteSlot(id) {
+      if (!currentUser || currentUser.role !== "admin") return;
+      if (confirm(`คุณต้องการลบช่อง ${id} หรือไม่?`)) {
+        slots = slots.filter(x => x.id !== id);
+        saveSlots();
+        renderParkingSlots();
+      }
+    }
+
+
+    /* ==============================================
+       4. MODAL: เพิ่มช่องจอดรถ (ADMIN ONLY)
+       ============================================== */
+    const addSlotModal = document.getElementById("add-slot-modal");
+    const addSlotForm = document.getElementById("add-slot-form");
+
+    function openAddSlotModal() {
+      addSlotModal.style.display = "flex";
+      document.getElementById("slot-name-input").value = "";
+      document.getElementById("slot-topic-input").value = "";
+    }
+
+    function closeAddSlotModal() {
+      addSlotModal.style.display = "none";
+    }
+
+    function toggleTopicInput() {
+      const type = document.getElementById("slot-type-input").value;
+      document.getElementById("topic-group").style.display = type === "real" ? "block" : "none";
+    }
+
+    addSlotForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("slot-name-input").value.trim();
+      const side = document.getElementById("slot-side-input").value;
+      const type = document.getElementById("slot-type-input").value;
+      const topic = document.getElementById("slot-topic-input").value.trim();
+
+      const newId = name.replace(/\s+/g, '_');
+      const isReal = type === "real";
+
+      const newSlot = {
+        id: newId,
+        name: `ช่อง ${name}`,
+        side: side,
+        isReal: isReal,
+        topic: isReal ? topic : "",
+        occupied: false,
+        cm: isReal ? "--" : 180.0,
+        mm: isReal ? "--" : 1800,
+        status: isReal ? "รอข้อมูลจาก ESP32..." : "🟢 ที่ว่าง (Empty)"
+      };
+
+      slots.push(newSlot);
+      saveSlots();
+      renderParkingSlots();
+      closeAddSlotModal();
+
+      if (isReal && topic) {
+        client.subscribe(topic);
+      }
+    });
+
+
+    /* ==============================================
+       5. SUMMARY STATS UPDATE
+       ============================================== */
+    function updateSummary() {
+      let free = 0;
+      let occupied = 0;
+
+      slots.forEach(s => {
+        if (s.occupied) occupied++;
+        else free++;
+      });
+
+      document.getElementById("total-slots").innerText = slots.length;
+      document.getElementById("free-slots").innerText = free;
+      document.getElementById("occupied-slots").innerText = occupied;
+    }
+
+
+    /* ==============================================
+       6. MQTT REAL-TIME INTEGRATION (HIVEMQ)
+       ============================================== */
+    const client = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
+
+    function subscribeRealSensors() {
+      if (!client.connected) return;
+      slots.filter(s => s.isReal && s.topic).forEach(s => {
+        client.subscribe(s.topic);
+      });
+    }
+
+    client.on("connect", () => {
+      document.getElementById("conn-status").innerText = "Online (เชื่อมต่อสำเร็จ)";
+      document.getElementById("live-dot").style.background = "#22c55e";
+      subscribeRealSensors();
+    });
+
+    client.on("message", (topic, payload) => {
+      try {
+        const data = JSON.parse(payload.toString());
+        const s = slots.find(x => x.isReal && x.topic === topic);
+        if (!s) return;
+
+        s.occupied = Boolean(data.occupied);
+
+        const cmEl = document.getElementById(`dist-cm-${s.id}`);
+        const mmEl = document.getElementById(`dist-mm-${s.id}`);
+        const meterEl = document.getElementById(`meter-bar-${s.id}`);
+        const statusEl = document.getElementById(`status-card-${s.id}`);
+
+        if (data.status === 4) {
+          s.cm = ">200";
+          s.mm = "Out";
+          s.status = "⚠️ เกินระยะตรวจจับ";
+          if (cmEl) cmEl.innerText = ">200";
+          if (mmEl) mmEl.innerText = "Out";
+          if (meterEl) meterEl.style.width = "100%";
+          if (statusEl) {
+            statusEl.className = "status-badge status-out";
+            statusEl.innerText = s.status;
+          }
+        } else {
+          s.cm = Number(data.cm).toFixed(1);
+          s.mm = data.mm;
+          s.status = data.occupied ? "🔴 มีรถจอด (Occupied)" : "🟢 ที่ว่าง (Empty)";
+
+          if (cmEl) cmEl.innerText = s.cm;
+          if (mmEl) mmEl.innerText = s.mm;
+          if (meterEl) {
+            let pct = Math.min((data.mm / 2000) * 100, 100);
+            meterEl.style.width = pct + "%";
+          }
+          if (statusEl) {
+            statusEl.className = `status-badge ${data.occupied ? "status-occupied" : "status-free"}`;
+            statusEl.innerText = s.status;
+          }
+        }
+
+        updateSummary();
+      } catch (e) {
+        console.error("Data error:", e);
+      }
+    });
 
     client.on("close", () => {
-
-      document.getElementById(
-        "conn-status"
-      ).innerText =
-        "Offline (ขาดการเชื่อมต่อ)";
-
-      document.getElementById(
-        "live-dot"
-      ).style.background =
-        "#ef4444";
-
+      document.getElementById("conn-status").innerText = "Offline (ขาดการเชื่อมต่อ)";
+      document.getElementById("live-dot").style.background = "#ef4444";
     });
 
-
-    /*
-     * MQTT Error
-     */
-
-    client.on("error", (error) => {
-
-      console.error(
-        "MQTT Error:",
-        error
-      );
-
+    client.on("error", (err) => {
+      console.error("MQTT Error:", err);
     });
-
   </script>
 
 </body>
+</html>
